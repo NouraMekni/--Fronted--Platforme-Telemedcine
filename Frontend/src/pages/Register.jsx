@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
 import { useAuth } from '../contexts/AuthContext'
 
-const API_URL = 'http://localhost:8082/api/users'
+const API_URL = 'http://localhost:8083/api/users'
 
 export default function Register(){
   const [name, setName] = useState('')
