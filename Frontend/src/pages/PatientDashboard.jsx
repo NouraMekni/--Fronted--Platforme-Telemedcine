@@ -19,7 +19,6 @@ export default function PatientRendezVous() {
   const [showModal, setShowModal] = useState(false);
 
   // Load medecins
-
   useEffect(() => {
     fetchMedecins();
   }, []);
@@ -36,9 +35,7 @@ export default function PatientRendezVous() {
     }
   };
 
-
   // Load RDVs for THIS patient
-
   useEffect(() => {
     if (!patient?.id) return;
     fetchRdv();
@@ -62,46 +59,41 @@ export default function PatientRendezVous() {
   };
 
   // ADD RDV
-
   const handleAdd = async () => {
-  if (!date || !description || !medecinId) {
-    alert("Veuillez remplir tous les champs.");
-    return;
-  }
-
-  const medId = Number(medecinId);
-  if (isNaN(medId)) {
-    alert("ID du médecin invalide !");
-    return;
-  }
-
-  const body = {
-    date: date,
-    description
-  };
-
-  try {
-    const res = await fetch(`${API_URL_RDV}/add/${patient.id}/${medId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      console.error("Erreur add:", text);
-      alert("Erreur lors de l'ajout du rendez-vous.");
+    if (!date || !description || !medecinId) {
+      alert("Veuillez remplir tous les champs.");
       return;
     }
 
-    const newRdv = await res.json();
-    setRdvs([...rdvs, newRdv]);
-    closeForm();
-  } catch (error) {
-    console.error("Erreur add:", error);
-  }
-};
+    const medId = Number(medecinId);
+    if (isNaN(medId)) {
+      alert("ID du médecin invalide !");
+      return;
+    }
 
+    const body = { date, description };
+
+    try {
+      const res = await fetch(`${API_URL_RDV}/add/${patient.id}/${medId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("Erreur add:", text);
+        alert("Erreur lors de l'ajout du rendez-vous.");
+        return;
+      }
+
+      const newRdv = await res.json();
+      setRdvs([...rdvs, newRdv]);
+      closeForm();
+    } catch (error) {
+      console.error("Erreur add:", error);
+    }
+  };
 
   // UPDATE RDV
   const handleUpdate = async () => {
@@ -124,7 +116,6 @@ export default function PatientRendezVous() {
       console.error("Erreur update:", e);
     }
   };
-
 
   // DELETE RDV
   const handleDelete = async (id) => {
@@ -167,7 +158,7 @@ export default function PatientRendezVous() {
     setMedecinId("");
   };
 
- if (!patient) {
+  if (!patient) {
     return (
       <DashboardLayout>
         <p>Chargement du patient...</p>
@@ -175,11 +166,24 @@ export default function PatientRendezVous() {
     );
   }
 
+  // Helper to display status badge
+  const renderStatusBadge = (status) => {
+    let colorClass = "bg-gray-500";
+    if (status === "PENDING") colorClass = "bg-yellow-500";
+    else if (status === "APPROVED") colorClass = "bg-green-500";
+    else if (status === "REFUSED") colorClass = "bg-red-500";
+
+    return (
+      <span className={`px-2 py-1 rounded text-white ${colorClass}`}>
+        {status}
+      </span>
+    );
+  };
+
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Mes rendez-vous</h1>
-
         <button
           onClick={openAddForm}
           className="bg-primary-600 text-white px-4 py-2 rounded hover:bg-primary-700"
@@ -198,7 +202,7 @@ export default function PatientRendezVous() {
             {rdvs.map((r) => (
               <li
                 key={r.id}
-                className="border p-3 rounded flex justify-between"
+                className="border p-3 rounded flex justify-between items-center"
               >
                 <div>
                   <div>
@@ -210,9 +214,10 @@ export default function PatientRendezVous() {
                   </div>
                 </div>
 
-                <div>
+                <div className="flex items-center gap-2">
+                  {renderStatusBadge(r.status)}
                   <button
-                    className="bg-green-500 text-white px-3 py-1 rounded mr-2 hover:bg-green-600"
+                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
                     onClick={() => openEditForm(r)}
                   >
                     Modifier
@@ -266,6 +271,12 @@ export default function PatientRendezVous() {
                   </option>
                 ))}
               </select>
+            )}
+
+            {editingRdv && (
+              <div className="mb-4">
+                <strong>Status: </strong> {renderStatusBadge(editingRdv.status)}
+              </div>
             )}
 
             <div className="flex justify-end gap-3">
