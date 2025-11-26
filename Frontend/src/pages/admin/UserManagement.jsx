@@ -118,7 +118,7 @@ export default function UserManagement(){
     total: users.length,
     patients: users.filter(u => u.role === 'PATIENT').length,
     medecins: users.filter(u => u.role === 'MEDECIN').length,
-    admins: users.filter(u => u.role === 'ADMINISTRATEUR').length
+    admins: users.filter(u => u.role === 'ADMIN').length
   }
 
   return (

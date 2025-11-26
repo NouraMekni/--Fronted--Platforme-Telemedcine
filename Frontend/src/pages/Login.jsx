@@ -2,19 +2,43 @@ import React, { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import Navbar from '../components/Navbar'
 
-export default function Login(){
-  const [name, setName] = useState('')
+const API_URL = "http://localhost:8083/api/auth/login" // your backend login endpoint
+
+export default function Login() {
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [role, setRole] = useState('patient')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const { login } = useAuth()
 
-  function handleSubmit(e){
+  async function handleSubmit(e) {
     e.preventDefault()
-    if (!name || !password) {
-      alert('Veuillez remplir tous les champs')
+    setError('')
+    if (!email || !password) {
+      setError('Veuillez remplir tous les champs')
       return
     }
-    login({ name: name || 'Utilisateur', role })
+
+    setLoading(true)
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+
+      if (!res.ok) {
+        const errData = await res.json()
+        throw new Error(errData.message || 'Erreur de connexion')
+      }
+
+      const userData = await res.json()
+      login(userData)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -24,37 +48,40 @@ export default function Login(){
         <div className="w-full max-w-md bg-white p-8 rounded shadow">
           <h2 className="text-2xl font-semibold mb-4">Connexion</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && <p className="text-red-500">{error}</p>}
+
             <div>
-              <label className="block text-sm">Nom</label>
-              <input 
-                className="w-full border rounded px-3 py-2" 
-                value={name} 
-                onChange={e=>setName(e.target.value)}
-                placeholder="Votre nom d'utilisateur"
+              <label className="block text-sm">Email</label>
+              <input
+                type="email"
+                className="w-full border rounded px-3 py-2"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Votre email"
                 required
               />
             </div>
+
             <div>
               <label className="block text-sm">Mot de passe</label>
-              <input 
+              <input
                 type="password"
-                className="w-full border rounded px-3 py-2" 
-                value={password} 
-                onChange={e=>setPassword(e.target.value)}
+                className="w-full border rounded px-3 py-2"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 placeholder="Votre mot de passe"
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm">Rôle</label>
-              <select className="w-full border rounded px-3 py-2" value={role} onChange={e=>setRole(e.target.value)}>
-                <option value="patient">Patient</option>
-                <option value="medecin">Médecin</option>
-                <option value="admin">Administrateur</option>
-              </select>
-            </div>
+
             <div className="flex items-center justify-between">
-              <button className="bg-primary-500 text-white px-4 py-2 rounded">Se connecter</button>
+              <button
+                type="submit"
+                className={`bg-primary-500 text-white px-4 py-2 rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={loading}
+              >
+                {loading ? 'Connexion...' : 'Se connecter'}
+              </button>
               <a href="#" className="text-sm text-primary-600 hover:underline">Mot de passe oublié ?</a>
             </div>
           </form>

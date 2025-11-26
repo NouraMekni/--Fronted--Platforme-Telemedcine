@@ -46,7 +46,7 @@ export default function UserTable({ users = [], loading, onEdit, onDelete, showM
     const labels = {
       'PATIENT': 'Patient',
       'MEDECIN': 'Médecin',
-      'ADMINISTRATEUR': 'Administrateur'
+      'ADMIN': 'Admin'
     }
     return labels[role] || role
   }
@@ -55,7 +55,7 @@ export default function UserTable({ users = [], loading, onEdit, onDelete, showM
     const colors = {
       'PATIENT': 'bg-green-100 text-green-800',
       'MEDECIN': 'bg-blue-100 text-blue-800',
-      'ADMINISTRATEUR': 'bg-orange-100 text-orange-800'
+      'ADMIN': 'bg-orange-100 text-orange-800'
     }
     return colors[role] || 'bg-gray-100 text-gray-800'
   }
@@ -163,7 +163,7 @@ export default function UserTable({ users = [], loading, onEdit, onDelete, showM
                   >
                     <option value="PATIENT">Patient</option>
                     <option value="MEDECIN">Médecin</option>
-                    <option value="ADMINISTRATEUR">Administrateur</option>
+                    <option value="ADMIN">Admin</option>
                   </select>
                 </div>
                 <div>
