@@ -17,6 +17,7 @@ import Reports from '../pages/admin/Reports'
 
 // Medecin pages
 import Planning from '../pages/medecin/Planning'
+import CalendarView from '../pages/medecin/CalendarView'
 import Patients from '../pages/medecin/Patients'
 import Consultations from '../pages/medecin/Consultations'
 import Prescriptions from '../pages/medecin/Prescriptions'
@@ -85,6 +86,11 @@ export default function AppRoutes(){
       <Route path="/medecin/planning" element={
         <RequireAuth role="medecin">
           <Planning />
+        </RequireAuth>
+      } />
+      <Route path="/medecin/CalendarView" element={
+        <RequireAuth role="medecin">
+          <CalendarView />
         </RequireAuth>
       } />
       <Route path="/medecin/patients" element={

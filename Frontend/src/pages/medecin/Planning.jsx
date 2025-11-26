@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import { useAuth } from "../../contexts/AuthContext";
 
+
+
 const API_URL_RDV = "http://localhost:8083/api/rendezvous";
 
 export default function Planning() {
@@ -28,6 +30,7 @@ export default function Planning() {
       console.error("Erreur fetch RDVs:", error);
     }
   };
+  
 
   // Approve or Reject
   const updateStatus = async (id, newStatus) => {
