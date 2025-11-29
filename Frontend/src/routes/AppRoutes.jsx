@@ -1,13 +1,13 @@
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Home from '../pages/Home'
-import Login from '../pages/Login'
-import Register from '../pages/Register'
+import Login from '../pages/Auth/Login'
+import Register from '../pages//Auth/Register'
 import Features from '../pages/Features'
 import Pricing from '../pages/Pricing'
-import AdminDashboard from '../pages/AdminDashboard'
-import MedecinDashboard from '../pages/MedecinDashboard'
-import PatientDashboard from '../pages/PatientDashboard'
+import AdminDashboard from '../pages/Dashboard/AdminDashboard'
+import MedecinDashboard from '../pages/Dashboard/MedecinDashboard'
+import PatientDashboard from '../pages/Dashboard/PatientDashboard'
 
 // Admin pages
 import UserManagement from '../pages/admin/UserManagement'
@@ -21,6 +21,8 @@ import CalendarView from '../pages/medecin/CalendarView'
 import Patients from '../pages/medecin/Patients'
 import Consultations from '../pages/medecin/Consultations'
 import Prescriptions from '../pages/medecin/Prescriptions'
+import ChatPanelMed from '../pages/medecin/ChatPanelMed'
+
 
 // Patient pages
 import Appointments from '../pages/patient/Appointments'
@@ -28,6 +30,8 @@ import MedicalFolder from '../pages/patient/MedicalFolder'
 import PatientPrescriptions from '../pages/patient/PatientPrescriptions'
 import PatientPayments from '../pages/patient/PatientPayments'
 import HealthTracking from '../pages/patient/HealthTracking'
+import ChatPanel from '../pages/patient/ChatPanel'
+
 
 import { useAuth } from '../contexts/AuthContext'
 
@@ -66,6 +70,7 @@ export default function AppRoutes(){
           <MedicalRecords />
         </RequireAuth>
       } />
+    
       <Route path="/admin/payments" element={
         <RequireAuth role="admin">
           <Payments />
@@ -86,6 +91,11 @@ export default function AppRoutes(){
       <Route path="/medecin/planning" element={
         <RequireAuth role="medecin">
           <Planning />
+        </RequireAuth>
+      } />
+      <Route path="/medecin/chatPanelMed" element={
+        <RequireAuth role="medecin">
+          <ChatPanelMed />
         </RequireAuth>
       } />
       <Route path="/medecin/CalendarView" element={
@@ -113,6 +123,11 @@ export default function AppRoutes(){
       <Route path="/patient/dashboard" element={
         <RequireAuth role="patient">
           <PatientDashboard />
+        </RequireAuth>
+      } />
+      <Route path="/patient/chat" element={
+        <RequireAuth role="patient">
+          <ChatPanel />
         </RequireAuth>
       } />
       <Route path="/patient/appointments" element={

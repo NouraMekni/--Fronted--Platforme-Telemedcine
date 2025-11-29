@@ -5,6 +5,8 @@
   border-radius: 0.5rem;
 }
 
+
+
 .fc .fc-button {
   background-color: #2e6ef8;
   color: white;
@@ -21,4 +23,22 @@
 .fc .fc-button.fc-button-active {
   background-color: #1e40af;
   color: white;
+}
+
+/* Style for dates with appointments */
+.fc .fc-daygrid-day.fc-day-today.date-with-appointment {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+.fc .fc-daygrid-day.date-with-appointment {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.fc .fc-daygrid-day.date-with-appointment:hover {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Ensure the background color shows properly */
+.fc .fc-daygrid-day-frame {
+  background-color: inherit;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import DashboardLayout from '../../components/DashboardLayout'
+import DashboardLayout from "../../components/DashboardLayout";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 
 const tensionData = [

@@ -7,8 +7,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./CalendarView.css";
 
-
-
 const API_URL_RDV = "http://localhost:8083/api/rendezvous";
 
 export default function CalendarView() {
@@ -31,6 +29,17 @@ export default function CalendarView() {
     }
   };
 
+  // Get unique dates that have appointments
+  const getDatesWithAppointments = () => {
+    const datesWithRdvs = new Set();
+    rdvs.forEach(rdv => {
+      if (rdv.date) {
+        datesWithRdvs.add(rdv.date);
+      }
+    });
+    return datesWithRdvs;
+  };
+
   const calendarEvents = rdvs.map((r) => ({
     id: r.id,
     title: `${r.patient?.name} — ${r.description}`,
@@ -44,6 +53,17 @@ export default function CalendarView() {
         : "red",
   }));
 
+  // Add background events for dates with appointments
+  const backgroundEvents = Array.from(getDatesWithAppointments()).map(date => ({
+    start: date,
+    display: 'background',
+    color: 'rgba(96, 165, 250, 0.65)',
+ // Soft blue background
+    classNames: ['date-with-appointment']
+  }));
+
+  const allEvents = [...calendarEvents, ...backgroundEvents];
+
   return (
     <DashboardLayout>
       <div className="mb-6">
@@ -53,7 +73,7 @@ export default function CalendarView() {
         </p>
       </div>
 
-      <div className="card p-4">
+      <div className="card p-4 w-[950px]">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
@@ -63,8 +83,11 @@ export default function CalendarView() {
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
-          events={calendarEvents}
+          events={allEvents}
           eventClick={(info) => {
+            // Don't show alert for background events
+            if (info.event.display === 'background') return;
+            
             const rdvId = info.event.id;
             const rdv = rdvs.find((r) => r.id.toString() === rdvId.toString());
             if (rdv) {
@@ -77,7 +100,7 @@ export default function CalendarView() {
           select={(info) => {
             alert(`Selected date: ${info.startStr}`);
           }}
-          dayMaxEventRows={3} 
+          dayMaxEventRows={3}
         />
       </div>
     </DashboardLayout>
