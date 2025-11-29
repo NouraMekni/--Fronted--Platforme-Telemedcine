@@ -120,229 +120,300 @@ export default function Planning() {
     ? rdvs.filter((r) => r.date === selectedDate)
     : rdvs;
 
+  // Status badge component
+  const StatusBadge = ({ status }) => {
+    const statusConfig = {
+      PENDING: { 
+        color: "bg-yellow-100 text-yellow-800 border-yellow-200", 
+        icon: "⏳", 
+        text: "En attente" 
+      },
+      APPROVED: { 
+        color: "bg-green-100 text-green-800 border-green-200", 
+        icon: "✅", 
+        text: "Confirmé" 
+      },
+      REFUSED: { 
+        color: "bg-red-100 text-red-800 border-red-200", 
+        icon: "❌", 
+        text: "Refusé" 
+      }
+    };
+
+    const config = statusConfig[status] || { 
+      color: "bg-gray-100 text-gray-800 border-gray-200", 
+      icon: "❓", 
+      text: status 
+    };
+
+    return (
+      <span className={`px-3 py-1.5 rounded-full text-sm font-medium border flex items-center gap-2 ${config.color}`}>
+        <span className="text-xs">{config.icon}</span>
+        {config.text}
+      </span>
+    );
+  };
+
   return (
     <DashboardLayout>
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Planning & Rendez-vous</h1>
-        <p className="text-sm text-slate-500">
-          Gestion de votre planning médical
-        </p>
-      </div>
+      <div className="max-w-6xl mx-auto p-6">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Planning Médical</h1>
+          <p className="text-gray-600">
+            Gérez votre planning et les rendez-vous des patients
+          </p>
+        </div>
 
-      <div className="flex gap-4 mb-4">
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          className="border px-3 py-2 rounded"
-        />
-        <button className="bg-primary-500 text-white px-4 py-2 rounded">
-          Bloquer créneau
-        </button>
-        <button
-          onClick={() => setSelectedDate("")}
-          className="border px-4 py-2 rounded"
-        >
-          Voir tout
-        </button>
-      </div>
-
-      <div className="card">
-        <h3 className="font-semibold mb-4">
-          {selectedDate
-            ? `Rendez-vous du ${selectedDate}`
-            : "Tous les rendez-vous"}
-          <span className="ml-2 text-sm font-normal text-slate-500">
-            ({filtered.length} rendez-vous)
-          </span>
-        </h3>
-
-        {filtered.length === 0 ? (
-          <p className="text-slate-500">Aucun rendez-vous.</p>
-        ) : (
-          <div className="space-y-3">
-            {filtered.map((r) => (
-              <div
-                key={r.id}
-                className="border rounded p-4 flex items-center justify-between hover:bg-slate-50"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-center min-w-[80px]">
-                    <div className="text-lg font-medium text-primary-600">
-                      {r.time || "—"}
-                    </div>
-                    <div className="text-sm text-slate-500">
-                      {r.date}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="font-medium">
-                      {r.patient?.name} {r.patient?.prenom}
-                    </div>
-                    <div className="text-sm text-slate-500">
-                      {r.description}
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1">
-                      📧 {r.patient?.email}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`px-2 py-1 rounded text-xs ${
-                      r.status === "APPROVED"
-                        ? "bg-green-100 text-green-800"
-                        : r.status === "PENDING"
-                        ? "bg-orange-100 text-orange-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {r.status}
-                  </span>
-
-                  {r.status === "PENDING" && (
-                    <div className="flex gap-2">
-                      <button
-  onClick={() => updateStatus(r.id, "APPROVED")}
-  className="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white text-lg hover:bg-green-600 transition-all duration-300 ease-in-out shadow-lg"
-  title="Approuver"
->
-  <span role="img" aria-label="approve">✓</span>
-</button>
-
-<button
-  onClick={() => updateStatus(r.id, "REFUSED")}
-  className="flex items-center justify-center w-10 h-10 rounded-full bg-red-500 text-white text-lg hover:bg-red-600 transition-all duration-300 ease-in-out shadow-lg"
-  title="Refuser"
->
-  <span role="img" aria-label="refuse">✗</span>
-</button>
-
-                    </div>
-                  )}
-
-                  {/* Modifier button */}
-                 <button
-  onClick={() => openEditModal(r)}
-  className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-400 text-sm font-semibold transition-all duration-500 ease-in-out shadow-md"
-  title="Modifier le rendez-vous"
->
-  <span role="img" aria-label="edit">✏️</span>
-  <span>Modifier</span>
-</button>
-
-
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* EDIT MODAL */}
-      {editing && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">
-              Modifier le Rendez-vous
-            </h2>
-
-            <div className="space-y-4">
-              {/* Patient Info */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Patient
-                </label>
-                <div className="border p-2 rounded bg-gray-50">
-                  {editing.patient?.name} {editing.patient?.prenom}
-                </div>
-              </div>
-
-              {/* Date */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Date
-                </label>
-                <input
-                  type="date"
-                  value={editing.date}
-                  onChange={(e) =>
-                    setEditing({ ...editing, date: e.target.value })
-                  }
-                  className="border w-full p-2 rounded focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-
-              {/* Time */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Heure
-                </label>
-                <select
-                  value={editTime}
-                  onChange={(e) => setEditTime(e.target.value)}
-                  className="border w-full p-2 rounded focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  {timeSlots.map((slot) => (
-                    <option key={slot} value={slot}>
-                      {slot}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description / Motif
-                </label>
-                <textarea
-                  value={editing.description}
-                  onChange={(e) =>
-                    setEditing({ ...editing, description: e.target.value })
-                  }
-                  className="border w-full p-2 rounded focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  rows="3"
-                  placeholder="Description de la consultation..."
-                />
-              </div>
-
-              {/* Status */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Statut actuel
-                </label>
-                <div className={`px-3 py-1 rounded text-sm inline-block ${
-                  editing.status === "APPROVED"
-                    ? "bg-green-100 text-green-800"
-                    : editing.status === "PENDING"
-                    ? "bg-orange-100 text-orange-800"
-                    : "bg-red-100 text-red-800"
-                }`}>
-                  {editing.status}
-                </div>
-              </div>
+        {/* Filters */}
+        <div className="bg-white rounded-2xl shadow-lg border border-blue-100 p-6 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                📅 Filtrer par date
+              </label>
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+              />
             </div>
-
-            <div className="flex justify-between mt-6 pt-4 border-t">
+            
+            <div className="flex gap-3 mt-6">
               <button
-                onClick={closeEditModal}
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
+                onClick={() => setSelectedDate("")}
+                className="px-6 py-3 border border-gray-300 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors"
               >
-                Annuler
+                Voir tout
               </button>
-
-              <button
-                onClick={updateRDV}
-                className="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors"
-              >
-                Sauvegarder
+              <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg">
+                Bloquer créneau
               </button>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Appointments List */}
+        <div className="bg-white rounded-2xl shadow-lg border border-blue-100 overflow-hidden">
+          <div className="p-6 border-b border-blue-100">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-semibold text-gray-800">
+                {selectedDate
+                  ? `Rendez-vous du ${selectedDate}`
+                  : "Tous les rendez-vous"}
+              </h3>
+              <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+                {filtered.length} rendez-vous
+              </span>
+            </div>
+          </div>
+
+          <div className="p-6">
+            {filtered.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">📅</div>
+                <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                  Aucun rendez-vous
+                </h3>
+                <p className="text-gray-500">
+                  {selectedDate 
+                    ? "Aucun rendez-vous programmé pour cette date" 
+                    : "Aucun rendez-vous dans votre planning"
+                  }
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filtered.map((r) => (
+                  <div
+                    key={r.id}
+                    className="bg-gradient-to-r from-white to-blue-50 border border-blue-200 rounded-xl p-6 hover:shadow-md transition-all duration-300"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-6">
+                        {/* Time Badge */}
+                        <div className="text-center min-w-[100px]">
+                          <div className="bg-blue-600 text-white rounded-xl p-4 shadow-lg">
+                            <div className="text-2xl font-bold">
+                              {r.time || "—"}
+                            </div>
+                            <div className="text-xs opacity-90 mt-1">
+                              {r.date}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Patient Info */}
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="bg-blue-100 p-2 rounded-lg">
+                              <span className="text-lg">👤</span>
+                            </div>
+                            <div>
+                              <h4 className="text-lg font-semibold text-gray-800">
+                                {r.patient?.name} {r.patient?.prenom}
+                              </h4>
+                              <p className="text-gray-600 text-sm">
+                                {r.description}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <div className="flex items-center gap-2">
+                              <span>📧</span>
+                              <span>{r.patient?.email}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-col items-end gap-3">
+                        <StatusBadge status={r.status} />
+                        
+                        <div className="flex gap-2">
+                          {r.status === "PENDING" && (
+                            <>
+                              <button
+                                onClick={() => updateStatus(r.id, "APPROVED")}
+                                className="flex items-center justify-center w-12 h-12 rounded-xl bg-green-500 text-white text-lg hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                title="Approuver"
+                              >
+                                <span role="img" aria-label="approve">✓</span>
+                              </button>
+
+                              <button
+                                onClick={() => updateStatus(r.id, "REFUSED")}
+                                className="flex items-center justify-center w-12 h-12 rounded-xl bg-red-500 text-white text-lg hover:bg-red-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                title="Refuser"
+                              >
+                                <span role="img" aria-label="refuse">✗</span>
+                              </button>
+                            </>
+                          )}
+
+                          <button
+                            onClick={() => openEditModal(r)}
+                            className="flex items-center gap-2 px-4 py-3 rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                            title="Modifier le rendez-vous"
+                          >
+                            <span role="img" aria-label="edit">✏️</span>
+                            <span>Modifier</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* EDIT MODAL */}
+        {editing && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 rounded-t-2xl">
+                <h2 className="text-xl font-bold text-white">
+                  ✏️ Modifier le Rendez-vous
+                </h2>
+              </div>
+
+              {/* Form */}
+              <div className="p-6 space-y-4">
+                {/* Patient Info */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    👤 Patient
+                  </label>
+                  <div className="border border-gray-300 rounded-xl px-4 py-3 bg-gray-50 font-medium">
+                    {editing.patient?.name} {editing.patient?.prenom}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Date */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      📅 Date
+                    </label>
+                    <input
+                      type="date"
+                      value={editing.date}
+                      onChange={(e) =>
+                        setEditing({ ...editing, date: e.target.value })
+                      }
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    />
+                  </div>
+
+                  {/* Time */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      ⏰ Heure
+                    </label>
+                    <select
+                      value={editTime}
+                      onChange={(e) => setEditTime(e.target.value)}
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                    >
+                      {timeSlots.map((slot) => (
+                        <option key={slot} value={slot}>
+                          {slot}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    📝 Description / Motif
+                  </label>
+                  <textarea
+                    value={editing.description}
+                    onChange={(e) =>
+                      setEditing({ ...editing, description: e.target.value })
+                    }
+                    className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
+                    rows="3"
+                    placeholder="Description de la consultation..."
+                  />
+                </div>
+
+                {/* Status */}
+                <div className="bg-blue-50 rounded-xl p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-gray-700">Statut actuel:</span>
+                    <StatusBadge status={editing.status} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex justify-end gap-3 p-6 border-t border-gray-200">
+                <button
+                  onClick={closeEditModal}
+                  className="px-6 py-3 rounded-xl font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={updateRDV}
+                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300"
+                >
+                  💾 Sauvegarder
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </DashboardLayout>
   );
 }

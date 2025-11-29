@@ -231,7 +231,7 @@ export default function PatientPayments(){
               <p className="text-sm mt-2">Tous vos rendez-vous sont confirmés ou payés</p>
             </div>
           ) : (
-            <div className="space-y-4 w-[950px]">
+            <div className="space-y-4">
               {rdvsEnAttente.map(rdv => (
                 <div key={rdv.id} className="border border-orange-200 rounded p-4">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">

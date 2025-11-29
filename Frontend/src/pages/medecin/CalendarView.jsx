@@ -73,7 +73,7 @@ export default function CalendarView() {
         </p>
       </div>
 
-      <div className="card p-4 w-[950px]">
+      <div className="card p-4">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
