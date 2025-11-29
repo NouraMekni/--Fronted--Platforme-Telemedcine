@@ -1,7 +1,7 @@
 // src/pages/PatientRendezVous.jsx
 import React, { useState, useEffect } from "react";
-import DashboardLayout from "../components/DashboardLayout";
-import { useAuth } from "../contexts/AuthContext";
+import DashboardLayout from "../../components/DashboardLayout";
+import { useAuth } from "../../contexts/AuthContext";
 
 const API_URL_MED = "http://localhost:8083/api/medecins";
 const API_URL_RDV = "http://localhost:8083/api/rendezvous";

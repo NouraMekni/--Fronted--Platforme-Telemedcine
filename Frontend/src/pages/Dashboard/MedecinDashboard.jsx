@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import DashboardLayout from '../components/DashboardLayout';
-import { useAuth } from '../contexts/AuthContext';
+import DashboardLayout from '../../components/DashboardLayout';
+import { useAuth } from '../../contexts/AuthContext';
 
 import { over } from 'stompjs';
 import SockJS from 'sockjs-client';

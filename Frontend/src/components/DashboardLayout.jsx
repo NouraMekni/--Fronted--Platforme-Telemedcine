@@ -1,13 +1,17 @@
 import React from "react";
-
-// Create simple sidebar components since the original ones are missing
-const SidebarAdmin = () => <div>Admin Sidebar</div>;
-const SidebarMedecin = () => <div>Medecin Sidebar</div>;
-const SidebarPatient = () => <div>Patient Sidebar</div>;
+import { useAuth } from "../contexts/AuthContext";
+import SidebarAdmin from "./SidebarAdmin";
+import SidebarMedecin from "./SidebarMedecin";
+import SidebarPatient from "./SidebarPatient";
 
 const DashboardLayout = ({ userType, children }) => {
+  const { user } = useAuth();
+  
+  // Use userType prop if provided, otherwise get from user role
+  const role = userType || user?.role?.toLowerCase();
+
   const renderSidebar = () => {
-    switch (userType) {
+    switch (role) {
       case 'admin':
         return <SidebarAdmin />;
       case 'medecin':
@@ -20,9 +24,9 @@ const DashboardLayout = ({ userType, children }) => {
   };
 
   return (
-    <div className="dashboard-layout">
+    <div className="dashboard-layout flex">
       {renderSidebar()}
-      <main className="dashboard-content">
+      <main className="dashboard-content flex-1">
         {children}
       </main>
     </div>

@@ -1,8 +1,8 @@
 import React from 'react'
-import DashboardLayout from '../components/DashboardLayout'
-import AdminHeader from '../components/AdminHeader'
-import UserTable from '../components/UserTable'
-import StatsCard from '../components/StatsCard'
+import DashboardLayout from '../../components/DashboardLayout'
+import AdminHeader from '../../components/AdminHeader'
+import UserTable from '../../components/UserTable'
+import StatsCard from '../../components/StatsCard'
 
 export default function AdminDashboard(){
   return (
