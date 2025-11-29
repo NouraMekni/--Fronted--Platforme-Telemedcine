@@ -180,15 +180,12 @@ export default function Planning() {
               />
             </div>
             
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-3 mt-6 ">
               <button
                 onClick={() => setSelectedDate("")}
-                className="px-6 py-3 border border-gray-300 rounded-xl font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                className="bg-gradient-to-r from-blue-400 to-blue-700 hover:from-blue-700 hover:to-blue-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2"
               >
                 Voir tout
-              </button>
-              <button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg">
-                Bloquer créneau
               </button>
             </div>
           </div>
@@ -234,7 +231,7 @@ export default function Planning() {
                       <div className="flex items-center gap-6">
                         {/* Time Badge */}
                         <div className="text-center min-w-[100px]">
-                          <div className="bg-blue-600 text-white rounded-xl p-4 shadow-lg">
+                          <div className="bg-blue-500 text-white rounded-xl p-4 shadow-lg">
                             <div className="text-2xl font-bold">
                               {r.time || "—"}
                             </div>
@@ -296,7 +293,7 @@ export default function Planning() {
 
                           <button
                             onClick={() => openEditModal(r)}
-                            className="flex items-center gap-2 px-4 py-3 rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="bg-gradient-to-r from-blue-400 to-blue-700 hover:from-blue-700 hover:to-blue-400 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2"
                             title="Modifier le rendez-vous"
                           >
                             <span role="img" aria-label="edit">✏️</span>
@@ -317,7 +314,7 @@ export default function Planning() {
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-300 scale-100">
               {/* Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 rounded-t-2xl">
+              <div className="bg-gradient-to-r from-blue-400 to-blue-700 p-6 rounded-t-2xl">
                 <h2 className="text-xl font-bold text-white">
                   ✏️ Modifier le Rendez-vous
                 </h2>
@@ -405,7 +402,7 @@ export default function Planning() {
                 </button>
                 <button
                   onClick={updateRDV}
-                  className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300"
+                  className="bg-gradient-to-r from-blue-400 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl font-semibold shadow-lg transition-all duration-300"
                 >
                   💾 Sauvegarder
                 </button>

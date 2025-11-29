@@ -200,19 +200,20 @@ export default function PatientPayments(){
       )}
 
       <div className="flex gap-2 mb-6">
-        <button 
-          className={`px-4 py-2 rounded ${activeTab === 'pending' ? 'bg-primary-500 text-white' : 'border'}`}
-          onClick={() => setActiveTab('pending')}
-        >
-          À payer ({rdvsEnAttente.length})
-        </button>
-        <button 
-          className={`px-4 py-2 rounded ${activeTab === 'history' ? 'bg-primary-500 text-white' : 'border'}`}
-          onClick={() => setActiveTab('history')}
-        >
-          Historique ({paiements.length})
-        </button>
-      </div>
+  <button
+    className="bg-gradient-to-r from-blue-400 to-blue-700 hover:from-blue-700 hover:to-blue-400 text-white px-5 py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-6"
+    onClick={() => setActiveTab('pending')}
+  >
+    💳 À payer ({rdvsEnAttente.length})
+  </button>
+  <button
+    className="bg-gradient-to-r from-blue-400 to-blue-700 hover:from-blue-700 hover:to-blue-400 text-white px-5 py-2 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-6"
+    onClick={() => setActiveTab('history')}
+  >
+    📊 Historique ({paiements.length})
+  </button>
+</div>
+
 
       {activeTab === 'pending' && (
         <div className="card">
